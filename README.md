@@ -14,23 +14,142 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Task
+### 1. Flash Card Component
+- Render Front
+  - contain markdown text which has text question, code snippet and picture
+- Render Show Back
+  - contain markdown text which has text explaination, code snippet and picture
+- Button to open form with code editor component for active recall. User will input the code implementation based Front questions in this component.
+- Button below to review
+  - Again (0): Complete failure, forgot completely
+  - Hard (1): Difficult recall, lots of hesitation
+  - Good (2): Correct with some effort
+  - Easy (3): Perfect, instant recall
+- Mobile First
+- Use eye catching colors combination. Use colors that motivate people to learn.
+- Use animation when we flip card Front to Back or Back to Front
+- maybe use librabry react-markdown rehype-highlight ?
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Data Structure in MongoDB
+```javascript
+{
+    front: "What is a closure?",
+    back: `A closure is a function that retains access to its outer scope.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+    \`\`\`javascript
+    function outer() {
+    let count = 0;
+    return function() {
+        return ++count;
+    }
+    }
+    \`\`\`
 
-## Learn More
+    **Key points:**
+    - Inner function has access to outer variables
+    - Variables persist even after outer function returns`,
+    language: "javascript", // optional, for metadata
+    ease_factor: 2.5,    // How "easy" the card is (≥1.3)
+    interval: 1,         // Days until next review
+    repetitions: 0       // Successful reviews in a row
+}
+```
 
-To learn more about Next.js, take a look at the following resources:
+### SM-2 Algorithm
+When you review a card, you rate your response:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Again (0): Complete failure, forgot completely
+- Hard (1): Difficult recall, lots of hesitation
+- Good (2): Correct with some effort
+- Easy (3): Perfect, instant recall
+```javascript
+function updateCardSM2(card, quality) {
+  // quality: 0=Again, 1=Hard, 2=Good, 3=Easy
+  
+  let { ease_factor, interval, repetitions } = card;
+  
+  // If failed (Again)
+  if (quality < 2) {
+    repetitions = 0;
+    interval = 1;
+  } 
+  // If passed (Hard, Good, Easy)
+  else {
+    // First successful review
+    if (repetitions === 0) {
+      interval = 1;
+    }
+    // Second successful review
+    else if (repetitions === 1) {
+      interval = 6;
+    }
+    // Third+ successful review - use ease factor
+    else {
+      interval = Math.round(interval * ease_factor);
+    }
+    
+    repetitions += 1;
+  }
+  
+  // Update ease factor based on quality
+  ease_factor = ease_factor + (0.1 - (3 - quality) * (0.08 + (3 - quality) * 0.02));
+  
+  // Ease factor must be at least 1.3
+  if (ease_factor < 1.3) {
+    ease_factor = 1.3;
+  }
+  
+  // Calculate next review date
+  const next_review = new Date();
+  next_review.setDate(next_review.getDate() + interval);
+  
+  return {
+    ease_factor,
+    interval,
+    repetitions,
+    next_review,
+    last_reviewed: new Date()
+  };
+}
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Example Walkthrough:**
 
-## Deploy on Vercel
+Let's say you're learning a new JavaScript card:
+```
+Initial state:
+- ease_factor: 2.5
+- interval: 0
+- repetitions: 0
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Day 1: First review, you answer "Good" (2)
+- repetitions: 0 → 1
+- interval: 0 → 1 day
+- ease_factor: 2.5 (unchanged)
+- Next review: Tomorrow
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Day 2: Second review, you answer "Good" (2)
+- repetitions: 1 → 2
+- interval: 1 → 6 days
+- ease_factor: 2.5
+- Next review: 6 days later
+
+Day 8: Third review, you answer "Good" (2)
+- repetitions: 2 → 3
+- interval: 6 → 15 days (6 × 2.5)
+- ease_factor: 2.5
+- Next review: 15 days later
+
+Day 23: Fourth review, you answer "Easy" (3)
+- repetitions: 3 → 4
+- interval: 15 → 45 days (15 × 2.5 × 1.2)
+- ease_factor: 2.5 → 2.6 (gets easier)
+- Next review: 45 days later
+
+Day 68: Fifth review, you answer "Again" (0) - FORGOT!
+- repetitions: 4 → 0 (reset!)
+- interval: 45 → 1 day (start over)
+- ease_factor: 2.6 → 2.18 (gets harder)
+- Next review: Tomorrow
+```
