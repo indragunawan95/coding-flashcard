@@ -16,10 +16,24 @@ A spaced repetition flashcard application for learning programming concepts, imp
 
 ### Collections
 
-#### 1. Cards Collection
+#### 1. Decks Collection
 ```javascript
 {
   _id: ObjectId,
+  name: String,            // Deck name
+  description: String,     // Optional description
+  color: String,           // Hex color for UI
+  icon: String,            // Optional icon name/emoji
+  created_at: Date,
+  updated_at: Date
+}
+```
+
+#### 2. Cards Collection
+```javascript
+{
+  _id: ObjectId,
+  deck_id: ObjectId,       // Reference to Decks collection
   front: String,           // Markdown content with question
   back: String,            // Markdown content with answer
   language: String,        // Programming language (js, python, etc.)
@@ -33,7 +47,7 @@ A spaced repetition flashcard application for learning programming concepts, imp
 }
 ```
 
-#### 2. Reviews Collection (Optional - for analytics)
+#### 3. Reviews Collection (Optional - for analytics)
 ```javascript
 {
   _id: ObjectId,
@@ -130,22 +144,36 @@ const REVIEW_OPTIONS = [
 - Progress indicator
 - Session completion summary
 
-### 3. Browse Cards - `/cards`
+### 3. Decks Page - `/decks`
+**Path**: `app/decks/page.tsx`
+
+**Features**:
+- List all decks with card counts
+- Create/Edit/Delete decks
+- Click deck to view its cards
+- Show cards due per deck
+
+### 4. Browse Cards - `/cards`
 **Path**: `app/cards/page.tsx`
 
 **Features**:
 - List all cards
-- Filter by language
+- Filter by deck and language
 - Search functionality
 - Add/Edit/Delete cards
 
-### 4. Add/Edit Card - `/cards/new` & `/cards/[id]/edit`
+### 5. Card Editor - `/cards/new` & `/cards/[id]/edit`
 **Path**: `app/cards/new/page.tsx`, `app/cards/[id]/edit/page.tsx`
 
 **Features**:
-- Markdown editor for front/back
-- Preview mode
+- Split-pane editor with live preview
+- Markdown editor for front/back with toolbar
+- Deck selection dropdown
 - Language selection
+- Preview mode toggle
+- Syntax highlighting in preview
+- Save/Cancel actions
+- Form validation
 
 ## API Routes
 
@@ -182,8 +210,16 @@ const REVIEW_OPTIONS = [
 
 **Logic**: Apply SM-2 algorithm and update card
 
-### 3. CRUD Operations
-- `GET /api/cards` - List all cards
+### 3. Deck Operations
+- `GET /api/decks` - List all decks
+- `GET /api/decks/[id]` - Get single deck
+- `GET /api/decks/[id]/cards` - Get all cards in deck
+- `POST /api/decks` - Create deck
+- `PUT /api/decks/[id]` - Update deck
+- `DELETE /api/decks/[id]` - Delete deck (with cascade option)
+
+### 4. Card CRUD Operations
+- `GET /api/cards` - List all cards (with optional deck filter)
 - `GET /api/cards/[id]` - Get single card
 - `POST /api/cards` - Create card
 - `PUT /api/cards/[id]` - Update card
@@ -307,8 +343,10 @@ xl: 1280px  // Desktops
 ### Phase 4: Pages & Routing (Week 4)
 - [ ] Build home page with due cards
 - [ ] Create study session page
-- [ ] Implement card management (CRUD)
-- [ ] Add/Edit card forms
+- [ ] Implement deck management page
+- [ ] Build card browser with deck filtering
+- [ ] Create card editor with split-pane preview
+- [ ] Implement card CRUD operations
 
 ### Phase 5: Polish & Testing (Week 5)
 - [ ] Mobile responsiveness testing
@@ -344,7 +382,6 @@ xl: 1280px  // Desktops
 ## Future Enhancements
 
 - [ ] User authentication
-- [ ] Card decks/categories
 - [ ] Study statistics dashboard
 - [ ] Import/Export cards (JSON/CSV)
 - [ ] Dark mode
