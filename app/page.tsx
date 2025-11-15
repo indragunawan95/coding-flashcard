@@ -55,32 +55,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-card-bg border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-primary">Coding Flashcards</h1>
-              <p className="text-text-secondary mt-1">Master programming concepts with spaced repetition</p>
-            </div>
-            <nav className="flex gap-4">
-              <Link
-                href="/decks"
-                className="px-4 py-2 text-text-primary hover:text-primary transition-colors font-medium"
-              >
-                Decks
-              </Link>
-              <Link
-                href="/cards"
-                className="px-4 py-2 text-text-primary hover:text-primary transition-colors font-medium"
-              >
-                Cards
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Stats Section */}

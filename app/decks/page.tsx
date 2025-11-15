@@ -75,20 +75,17 @@ export default function DecksPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-card-bg border-b border-gray-200 shadow-sm">
+      {/* Page Header */}
+      <div className="bg-card-bg border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-              <Link href="/" className="text-sm text-primary hover:text-primary-dark mb-2 inline-block">
-                ← Back to Home
-              </Link>
-              <h1 className="text-3xl font-bold text-text-primary">Decks</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-text-primary">Decks</h1>
               <p className="text-text-secondary mt-1">Organize your flashcards into decks</p>
             </div>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors flex items-center gap-2"
+              className="px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors flex items-center justify-center gap-2 whitespace-nowrap"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -97,7 +94,7 @@ export default function DecksPage() {
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Decks Grid */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
