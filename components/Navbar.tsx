@@ -21,6 +21,8 @@ export default function Navbar() {
     { href: '/decks', label: 'Decks' },
     { href: '/cards', label: 'Cards' },
     { href: '/study', label: 'Study' },
+    { href: '/p5', label: 'P5 Renderer' },
+    { href: '/p5-code-generation', label: 'P5 Generation' },
   ];
 
   const isActive = (href: string) => {

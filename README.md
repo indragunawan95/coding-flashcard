@@ -153,3 +153,15 @@ Day 68: Fifth review, you answer "Again" (0) - FORGOT!
 - ease_factor: 2.6 → 2.18 (gets harder)
 - Next review: Tomorrow
 ```
+
+
+### Prompt
+```
+Prompt for algorithm masukin di create card:
+
+Create Front and Back Flash Card about [ALGORITHM_NAME]. Front and Back must be in markdown string format.
+
+Front: Step-by-step explanation with ASCII art (use →, ←, ↑, ↓, ⇄, │, ─, └, ┘, ┌, ┐) showing concrete example.
+
+Back: Include algorithm explanation, core mechanism, time/space complexity with explanation, [PROGRAMMING LANGUANGE] implementation, pros/cons, and when to use/avoid.
+```
